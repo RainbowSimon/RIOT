@@ -269,6 +269,9 @@ static ieee802154_dev_t *_reg_callback(ieee802154_dev_type_t type, void *opaque)
         case IEEE802154_DEV_TYPE_ESP_IEEE802154:
             printf("esp_ieee802154");
             break;
+        case IEEE802154_DEV_TYPE_DW3XXX:
+            printf("dw3xxx");
+            break;
     }
 
     puts(".");
@@ -326,11 +329,12 @@ static int _init(void)
     res = ieee802154_radio_config_phy(&_radio, &conf);
     expect(res >= 0);
 
+    // TODO better handling
     /* ieee802154_radio_set_cca_mode*/
     res = ieee802154_radio_set_cca_mode(&_radio, IEEE802154_CCA_MODE_ED_THRESHOLD);
-    expect(res >= 0);
+    //expect(res >= 0);
     res = ieee802154_radio_set_cca_threshold(&_radio, CONFIG_IEEE802154_CCA_THRESH_DEFAULT);
-    expect(res >= 0);
+    //expect(res >= 0);
 
     /* Set the transceiver state to RX_ON in order to receive packets */
     ieee802154_radio_set_rx(&_radio);

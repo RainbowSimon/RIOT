@@ -8,6 +8,16 @@ PKG_LICENSE=ISC AND LicenseRef-QORVO-2
 
 include $(RIOTBASE)/pkg/pkg.mk
 
-all:
+IGNORE = decadriver_dw3000 decadriver_dw3720
+
+SUBMODS := $(filter-out $(IGNORE),$(filter decadriver_%,$(USEMODULE)))
+
+all: $(SUBMODS)
 	$(QQ)"$(MAKE)" -C $(PKG_SOURCE_DIR) -f $(CURDIR)/Makefile.$(PKG_NAME)
+
+# Platform specific code
+decadriver_riot:
 	$(QQ)"$(MAKE)" -C $(RIOTPKG)/decadriver/platform
+
+decadriver_ieee802154_hal:
+	$(QQ)"$(MAKE)" -C $(RIOTPKG)/decadriver/radio_hal

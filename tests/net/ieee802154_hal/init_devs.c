@@ -58,6 +58,10 @@ static mrf24j40_t mrf24j40_dev[MRF24J40_NUM];
 static bhp_event_t mrf24j40_bhp[MRF24J40_NUM];
 #endif
 
+#ifdef MODULE_DECADRIVER_IEEE802154_HAL
+#  include "decadriver_802154_hal.h"
+#endif
+
 void ieee802154_hal_test_init_devs(ieee802154_dev_cb_t cb, void *opaque)
 {
     if (IS_USED(MODULE_EVENT_THREAD)) {
@@ -90,7 +94,7 @@ void ieee802154_hal_test_init_devs(ieee802154_dev_cb_t cb, void *opaque)
     }
 #endif
 
-#ifdef MODULE_NRF802154
+#ifdef MODULE_NRF802154______
     if ((radio = cb(IEEE802154_DEV_TYPE_NRF802154, opaque)) ){
         nrf802154_hal_setup(radio);
         nrf802154_init();
@@ -124,6 +128,13 @@ void ieee802154_hal_test_init_devs(ieee802154_dev_cb_t cb, void *opaque)
             mrf24j40_init(&mrf24j40_dev[i], p, radio, bhp_event_isr_cb, &mrf24j40_bhp[i]);
             break;
         }
+    }
+#endif
+
+#ifdef MODULE_DECADRIVER_IEEE802154_HAL
+    if ((radio = cb(IEEE802154_DEV_TYPE_DW3XXX, opaque)) ){
+        dw3000_ieee802154_hal_setup(radio);
+        dw3000_ieee802154_init();
     }
 #endif
 }

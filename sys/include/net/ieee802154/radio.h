@@ -153,6 +153,10 @@ typedef enum {
      */
     IEEE802154_CAP_PHY_MR_FSK           = BIT18,
     /**
+     * @brief High Rate Pulse Repetition Frequency PHY mode
+     */
+    IEEE802154_CAP_PHY_HRP           = BIT19,
+    /**
      * @brief the device supports source address match table.
      *
      * A Source Address Match table contains source addresses with pending
@@ -160,7 +164,7 @@ typedef enum {
      * Request command from a child node, the Frame Pending bit of the ACK is
      * set if the source address matches one from the table.
      */
-    IEEE802154_CAP_SRC_ADDR_MATCH       = BIT19,
+    IEEE802154_CAP_SRC_ADDR_MATCH       = BIT20,
 } ieee802154_rf_caps_t;
 
 /**
@@ -172,7 +176,8 @@ typedef enum {
     | IEEE802154_CAP_PHY_OQPSK      \
     | IEEE802154_CAP_PHY_MR_OQPSK   \
     | IEEE802154_CAP_PHY_MR_OFDM    \
-    | IEEE802154_CAP_PHY_MR_FSK)    \
+    | IEEE802154_CAP_PHY_MR_FSK     \
+    | IEEE802154_CAP_PHY_HRP)
 
 /**
  * @brief Transmission status
@@ -450,6 +455,11 @@ typedef enum {
      * @brief CCA using third mode (energy detection OR carrier sensing)
      */
     IEEE802154_CCA_MODE_ED_THRESH_OR_CS,
+    /**
+     * @brief CCA using fourth mode (ALOHA, always report idle)
+     */
+    // TODO add to all drivers
+    IEEE802154_CCA_MODE_ALOHA,
 } ieee802154_cca_mode_t;
 
 /**

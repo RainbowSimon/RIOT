@@ -112,7 +112,7 @@ extern "C" {
  *   For example, this affects systems with direct USB stdio (@ref
  *   usbus_cdc_acm_stdio) with the default terminal `pyterm`.
  */
-#define SHELL_DEFAULT_BUFSIZE   (128)
+#define SHELL_DEFAULT_BUFSIZE   (512)
 
 /**
  * @brief           Optional hook after readline has triggered.

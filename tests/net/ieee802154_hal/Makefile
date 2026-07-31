@@ -21,6 +21,12 @@ USEMODULE += event_callback
 USEMODULE += xtimer
 USEMODULE += netdev_default
 
+# TODO rremove
+USEPKG += decadriver
+USEMODULE += decadriver_ieee802154_hal
+
+CFLAGS += -Wno-switch
+
 include $(RIOTBASE)/Makefile.include
 
 ifneq (,$(filter bhp,$(USEMODULE)))

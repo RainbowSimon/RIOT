@@ -45,6 +45,7 @@ typedef enum {
     IEEE802154_DEV_TYPE_KW2XRF,
     IEEE802154_DEV_TYPE_MRF24J40,
     IEEE802154_DEV_TYPE_ESP_IEEE802154,
+    IEEE802154_DEV_TYPE_DW3XXX,
 } ieee802154_dev_type_t;
 
 typedef ieee802154_dev_t* (*ieee802154_dev_cb_t)(ieee802154_dev_type_t type,

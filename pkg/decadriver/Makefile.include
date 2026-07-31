@@ -7,3 +7,7 @@ INCLUDES += -I$(RIOTPKG)/decadriver/platform/include
 
 PSEUDOMODULES += decadriver_dw3000
 PSEUDOMODULES += decadriver_dw3720
+
+ifneq (,$(filter decadriver_ieee802154_hal,$(USEMODULE)))
+  INCLUDES += -I$(RIOTPKG)/decadriver/radio_hal/include
+endif

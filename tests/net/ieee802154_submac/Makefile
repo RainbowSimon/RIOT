@@ -13,6 +13,12 @@ USEMODULE += ieee802154
 USEMODULE += ieee802154_submac
 USEMODULE += ztimer_usec
 
+# TODO rremove
+USEPKG += decadriver
+USEMODULE += decadriver_ieee802154_hal
+
+CFLAGS += -Wno-switch
+
 ifneq (,$(filter native native32 native64,$(BOARD)))
   USE_ZEP = 1
   USEMODULE += socket_zep
