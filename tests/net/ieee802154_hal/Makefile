@@ -26,6 +26,7 @@ USEPKG += decadriver
 USEMODULE += decadriver_ieee802154_hal
 
 CFLAGS += -Wno-switch
+CFLAGS += -DCONFIG_IEEE802154_DEFAULT_CHANNEL=9
 
 include $(RIOTBASE)/Makefile.include
 

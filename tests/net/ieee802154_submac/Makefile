@@ -18,6 +18,7 @@ USEPKG += decadriver
 USEMODULE += decadriver_ieee802154_hal
 
 CFLAGS += -Wno-switch
+CFLAGS += -DCONFIG_IEEE802154_DEFAULT_CHANNEL=9
 
 ifneq (,$(filter native native32 native64,$(BOARD)))
   USE_ZEP = 1
