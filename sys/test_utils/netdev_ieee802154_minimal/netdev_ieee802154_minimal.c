@@ -32,7 +32,7 @@
 #include "init_dev.h"
 
 device_reg_entry_t _devices[NETDEV_IEEE802154_MINIMAL_NUMOF];
-static uint8_t _buffer[IEEE802154_FRAME_LEN_MAX];
+static uint8_t _buffer[1024];
 static char _addr_str[IEEE802154_LONG_ADDRESS_LEN * 3];
 
 struct event_pkt_desc {
@@ -222,6 +222,7 @@ int netdev_ieee802154_minimal_send(struct netdev *dev, iolist_t *pkt)
     struct event_pkt_desc desc = {.event.handler=_post_send_event, .pkt = pkt,
                                   .dev = dev};
     event_post(EVENT_PRIO_HIGHEST, (event_t*) &desc);
+    event_sync(EVENT_PRIO_HIGHEST);
     return desc.res;
 }
 

@@ -30,6 +30,15 @@ USEMODULE += netstats_l2
 USEMODULE += netstats_ipv6
 USEMODULE += netstats_rpl
 
+USEPKG += decadriver
+USEMODULE += decadriver_ieee802154_hal
+
+CFLAGS += -DLOG_LEVEL=LOG_ALL
+
+CFLAGS += -DEVENT_THREAD_STACKSIZE_DEFAULT=2048
+CFLAGS += -DTHREAD_STACKSIZE_DEFAULT=4096
+CFLAGS += -DISR_STACKSIZE=2048
+
 # Optionally include DNS support. This includes resolution of names at an
 # upstream DNS server and the handling of RDNSS options in Router Advertisements
 # to auto-configure that upstream DNS server.
@@ -60,6 +69,8 @@ endif
 # Uncomment this to join RPL DODAGs even if DIOs do not contain
 # DODAG Configuration Options (see the doc for more info)
 # CFLAGS += -DCONFIG_GNRC_RPL_DODAG_CONF_OPTIONAL_ON_JOIN
+
+CFLAGS += -Wno-switch
 
 # Change this to 0 show compiler invocation lines by default:
 QUIET ?= 1

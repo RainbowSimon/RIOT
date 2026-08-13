@@ -192,4 +192,9 @@ void gnrc_netif_init_devs(void)
         auto_init_w5500();
     }
 
+    if (IS_USED(MODULE_DECADRIVER_IEEE802154_HAL)) {
+        extern void auto_init_decadriver_hal(void);
+        auto_init_decadriver_hal();
+    }
+
 }

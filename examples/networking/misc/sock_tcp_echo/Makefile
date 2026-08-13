@@ -29,6 +29,16 @@ else
   CFLAGS += -DCONFIG_GNRC_TCP_RCV_BUFFERS=2
 endif
 
+USEPKG += decadriver
+USEMODULE += decadriver_ieee802154_hal
+
+CFLAGS += -Wno-switch
+CFLAGS += -DLOG_LEVEL=LOG_ALL
+
+CFLAGS += -DEVENT_THREAD_STACKSIZE_DEFAULT=2048
+CFLAGS += -DTHREAD_STACKSIZE_DEFAULT=4096
+CFLAGS += -DISR_STACKSIZE=2048
+
 # Comment this out to disable code in RIOT that does safety checking
 # which is not needed in a production environment but helps in the
 # development process:

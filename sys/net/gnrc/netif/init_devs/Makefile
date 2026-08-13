@@ -4,3 +4,4 @@ MODULE = gnrc_netif_init_devs
 MODULE_SUPPORTS_STATIC_ANALYSIS := 1
 
 include $(RIOTMAKE)/auto_init.inc.mk
+
