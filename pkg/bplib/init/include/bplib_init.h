@@ -36,6 +36,8 @@
 
 #include "bplib.h"
 
+#include "thread_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

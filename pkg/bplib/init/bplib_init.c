@@ -60,41 +60,52 @@ int bplib_init(void)
     bplib_instance_data.running = 1;
 
     /* FWP */
-    bplib_status = bplib_riot_fwp_init();
-    if (bplib_status != BPLIB_SUCCESS) {
-        return 1;
-    }
+    //bplib_status = bplib_riot_fwp_init();
+    //if (bplib_status != BPLIB_SUCCESS) {
+    //    return 1;
+    //}
 
     /* EM */
-    bplib_status = BPLib_EM_Init();
-    if (bplib_status != BPLIB_SUCCESS) {
-        return 2;
-    }
+    //bplib_status = BPLib_EM_Init();
+    //if (bplib_status != BPLIB_SUCCESS) {
+    //    return 2;
+    //}
 
     /* Time Management */
-    bplib_status = BPLib_TIME_Init();
-    if (bplib_status != BPLIB_SUCCESS) {
-        return 3;
-    }
+    //bplib_status = BPLib_TIME_Init();
+    //if (bplib_status != BPLIB_SUCCESS) {
+    //    return 3;
+    //}
 
     /* Node Config */
-    bplib_status = bplib_riot_nc_init(&bplib_instance_data.ConfigPtrs);
+    //bplib_status = bplib_riot_nc_init(&bplib_instance_data.ConfigPtrs);
+    //if (bplib_status != BPLIB_SUCCESS) {
+    //    return 4;
+    //}
+    
+    bplib_riot_nc_init(&bplib_instance_data.ConfigPtrs);
+
+    // TODO the 1 magic number
+    bplib_status = BPLib_NC_Init(&bplib_instance_data.ConfigPtrs,
+                                 &bplib_fwp_callbacks,
+                                 &bplib_instance_data.BPLibInst,
+                                 1, mem_pool, (size_t)CONFIG_BPLIB_MEMPOOL_LEN);
     if (bplib_status != BPLIB_SUCCESS) {
-        return 4;
+        return bplib_status;
     }
 
     /* MEM */
-    bplib_status = BPLib_MEM_PoolInit(&bplib_instance_data.BPLibInst.pool, mem_pool,
-        (size_t)CONFIG_BPLIB_MEMPOOL_LEN);
-    if (bplib_status != BPLIB_SUCCESS) {
-        return 5;
-    }
+    //bplib_status = BPLib_MEM_PoolInit(&bplib_instance_data.BPLibInst.pool, mem_pool,
+    //    (size_t)CONFIG_BPLIB_MEMPOOL_LEN);
+    //if (bplib_status != BPLIB_SUCCESS) {
+    //    return 5;
+    //}
 
     /* QM. The last arg is 0 since it (BPLIB_QM_MAX_JOBS) is now a compile time constant */
-    bplib_status = BPLib_QM_QueueTableInit(&bplib_instance_data.BPLibInst, 0);
-    if (bplib_status != BPLIB_SUCCESS) {
-        return 6;
-    }
+    //bplib_status = BPLib_QM_QueueTableInit(&bplib_instance_data.BPLibInst, 0);
+    //if (bplib_status != BPLIB_SUCCESS) {
+    //    return 6;
+    //}
 
     /* Start Generic Worker */
     int rc = thread_create(generic_worker_stack, CONFIG_BPLIB_GENERIC_STACK_SIZE,

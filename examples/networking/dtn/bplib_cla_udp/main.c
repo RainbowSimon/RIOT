@@ -118,10 +118,11 @@ static int _bp(int argc, char **argv)
     else if (strcmp(argv[1], "contact") == 0) {
         int action = atoi(argv[3]);
         if (action) {
-            BPLib_CLA_ContactStart(c);
+            // TODO wrapper to not have to pass the instance all the time
+            BPLib_CLA_ContactStart(&bplib_instance_data.BPLibInst, c);
         }
         else {
-            BPLib_CLA_ContactStop(c);
+            BPLib_CLA_ContactStop(&bplib_instance_data.BPLibInst, c);
         }
     }
 
@@ -146,12 +147,13 @@ int main(void)
     }
 
     /* Add and start the application level I/O */
-    BPLib_PI_AddApplication(0);
+    // TODO wrapper here too
+    BPLib_PI_AddApplication(&bplib_instance_data.BPLibInst, 0);
     BPLib_PI_StartApplication(0);
 
     /* Let bplib know the contact started */
-    BPLib_CLA_ContactSetup(0);
-    BPLib_CLA_ContactStart(0);
+    BPLib_CLA_ContactSetup(&bplib_instance_data.BPLibInst, 0);
+    BPLib_CLA_ContactStart(&bplib_instance_data.BPLibInst, 0);
 
     /* Consume the incoming bundles */
     thread_create(stack_egress, sizeof(stack_egress),
@@ -164,7 +166,7 @@ int main(void)
     /* Note: Make sure to call BPLib_CLA_ContactTeardown and BPLib_PI_RemoveApplication
      * in production, since this includes some measures to push bundles not yet sent, but queued,
      * back into storage. This is not reachable here due to the shell. */
-    BPLib_CLA_ContactStop(0);
+    BPLib_CLA_ContactStop(&bplib_instance_data.BPLibInst, 0);
     BPLib_CLA_ContactTeardown(&bplib_instance_data.BPLibInst, 0);
     bplib_cla_udp_stop(&cla_udp1);
 

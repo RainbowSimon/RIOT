@@ -80,6 +80,7 @@ typedef enum {
     BPLIB_PAYLOAD_BLOCK = 3
 } bplib_nc_canonical_block_t;
 
+// TODO description. It does not call anything
 /**
  * @brief Initializes bplib's NC.
  *
@@ -87,9 +88,8 @@ typedef enum {
  * This function sets the config pointers, calls BPLib_NC_Init and returns.
  *
  * @param[out] ConfigPtrs pointers in this will be set to the config
- * @return BPLIB_SUCCESS on success, forwarded from BPLib_NC_Init call.
  */
-BPLib_Status_t bplib_riot_nc_init(BPLib_NC_ConfigPtrs_t* ConfigPtrs);
+void bplib_riot_nc_init(BPLib_NC_ConfigPtrs_t* ConfigPtrs);
 
 /**
  * @brief Set the hop limit of the channel.
