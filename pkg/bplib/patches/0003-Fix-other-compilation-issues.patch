@@ -1,7 +1,7 @@
-From 442579ad84d2430601c123e35cc5640dd0bff7a6 Mon Sep 17 00:00:00 2001
+From 761d350942f84401af4afff904fc001f30246f19 Mon Sep 17 00:00:00 2001
 From: Simon Grund <mail@simongrund.de>
 Date: Tue, 25 Aug 2026 16:40:21 +0200
-Subject: [PATCH 3/3] Fix other compilation issues
+Subject: [PATCH 3/7] Fix other compilation issues
 
 General commit to fix all compilation issues that only appear in RIOT
 and not on native.

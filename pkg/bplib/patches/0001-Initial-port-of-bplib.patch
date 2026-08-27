@@ -1,7 +1,7 @@
-From 3727d84fb21f4e2bd867e4967e90f40082743017 Mon Sep 17 00:00:00 2001
+From 54109b6ae8a117feb21f548394bea90c8b9d8cd9 Mon Sep 17 00:00:00 2001
 From: Simon Grund <simon.grund@tuhh.de>
 Date: Wed, 4 Feb 2026 13:56:09 +0100
-Subject: [PATCH 1/3] Initial port of bplib
+Subject: [PATCH 1/7] Initial port of bplib
 
 Changed all Threading synchronization to RIOT analogs. Changed the time
 module to use vfs. The storage is now only the header, the actual
@@ -12,6 +12,7 @@ Changed other limitations for RIOT (like only one worker).
  aa/as/src/bplib_as_internal.c     |  46 ++-----------
  aa/as/src/bplib_as_internal.h     |   6 +-
  aa/nc/inc/bplib_nc_rwlock.h       |   9 +--
+ aa/nc/src/bplib_nc.c              |  15 ++---
  aa/nc/src/bplib_nc_rwlock.c       |  56 +++++-----------
  bpa/ct/inc/bplib_ct.h             |   4 +-
  bpa/ct/src/bplib_ct.c             |  36 +++++-----
@@ -31,7 +32,7 @@ Changed other limitations for RIOT (like only one worker).
  cla/src/bplib_cla.c               |   2 +-
  inc/bplib_inst.h                  |   3 +-
  version/src/bplib_version.c       |   9 +--
- 22 files changed, 148 insertions(+), 268 deletions(-)
+ 23 files changed, 155 insertions(+), 276 deletions(-)
  create mode 100644 bpa/stor/src/bplib_stor_cmake.c
 
 diff --git a/aa/as/src/bplib_as_internal.c b/aa/as/src/bplib_as_internal.c
@@ -159,6 +160,32 @@ index 2fe65fff..3e5c7a19 100644
      int ReaderCnt;                 /**< Number of active readers */
      int WriterCnt;               /**< Number of active writers */
  } BPLib_NC_RWLock_t;
+diff --git a/aa/nc/src/bplib_nc.c b/aa/nc/src/bplib_nc.c
+index 8eea6f34..ba533f6b 100644
+--- a/aa/nc/src/bplib_nc.c
++++ b/aa/nc/src/bplib_nc.c
+@@ -147,14 +147,13 @@ BPLib_Status_t BPLib_NC_Init(BPLib_NC_ConfigPtrs_t* ConfigPtrs, void* Callbacks,
+     /* Without modifying the TIME module, this was unable to work in BPCat. The
+     ** TIME and AS module's use of OSAL needs to be abstracted because no data is
+     ** being put into BPLib by BPCat */
+-    #ifdef CFS_BUILD
+-        /* Initialize time */
+-        Status = BPLib_TIME_Init();
+-        if (Status != BPLIB_SUCCESS)
+-        { /* Failed initialization of TIME */
+-            return BPLIB_NC_TIME_INIT_ERR;
+-        }
+-    #endif
++    /* This should work on RIOT */
++    /* Initialize time */
++    Status = BPLib_TIME_Init();
++    if (Status != BPLIB_SUCCESS)
++    { /* Failed initialization of TIME */
++        return BPLIB_NC_TIME_INIT_ERR;
++    }
+ 
+     /* Initialize NC */
+     Status = BPLib_NC_InitImpl(Instance, ConfigPtrs);
 diff --git a/aa/nc/src/bplib_nc_rwlock.c b/aa/nc/src/bplib_nc_rwlock.c
 index fa8b3533..309defde 100644
 --- a/aa/nc/src/bplib_nc_rwlock.c
@@ -740,7 +767,7 @@ index 9f2252ea..8cc9f531 100644
      return Status;
  }
 diff --git a/ci/qm/src/bplib_qm_waitqueue.c b/ci/qm/src/bplib_qm_waitqueue.c
-index bb5061ef..a42c47a1 100644
+index bb5061ef..5fb883b7 100644
 --- a/ci/qm/src/bplib_qm_waitqueue.c
 +++ b/ci/qm/src/bplib_qm_waitqueue.c
 @@ -26,27 +26,8 @@
@@ -825,7 +852,7 @@ index bb5061ef..a42c47a1 100644
 -            return false;
 +    rc = sema_wait_timed_ztimer(&q->s_slots, ZTIMER_MSEC, timeout_ms);
 +    if (rc != 0) {
-+        if (rc != -ETIMEDOUT) {
++        if (rc != -ETIMEDOUT && rc != -EAGAIN) {
 +            printf(" BPLib_QM_WaitQueueTryPush NON-TIMEOUT ERROR: %s\n", strerror(rc));
          }
 +        return false;
@@ -880,7 +907,7 @@ index bb5061ef..a42c47a1 100644
 -            return false;
 +    rc = sema_wait_timed_ztimer(&q->s_items, ZTIMER_MSEC, timeout_ms);
 +    if (rc != 0) {
-+        if (rc != -ETIMEDOUT) {
++        if (rc != -ETIMEDOUT && rc != -EAGAIN) {
 +            printf(" BPLib_QM_WaitQueueTryPull NON-TIMEOUT ERROR: %s\n", strerror(rc));
          }
 +        return false;

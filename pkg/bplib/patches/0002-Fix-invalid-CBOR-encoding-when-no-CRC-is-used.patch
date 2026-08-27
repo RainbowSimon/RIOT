@@ -1,7 +1,7 @@
-From 10c4cbf7555d9feb54873ea3bfa49e5c592436c9 Mon Sep 17 00:00:00 2001
+From 43a41a377c4c9abd5a5f3bec045b755451a6ac69 Mon Sep 17 00:00:00 2001
 From: Simon Grund <mail@simongrund.de>
 Date: Tue, 25 Aug 2026 15:52:06 +0200
-Subject: [PATCH 2/3] Fix invalid CBOR encoding when no CRC is used
+Subject: [PATCH 2/7] Fix invalid CBOR encoding when no CRC is used
 
 Bug reported here https://github.com/nasa/bplib/issues/266.
 ---
