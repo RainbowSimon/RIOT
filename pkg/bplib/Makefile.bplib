@@ -17,9 +17,9 @@ SRC += ci/mem/src/bplib_mem.c # Add back since filtered out. This is always need
 
 # Note: We use the ben_allocator and exlude the std_allocator (which would use
 #  malloc instead of a static allocation pool for the blocks). This could be
-#  swapped or a custom allocator could even be used here.
+#  changed here.
+#  !!! Remember to also change the define in the Makefile.include
 SRC += ci/mem/src/bplib_ben_allocator.c
-CFLAGS += -DBPLIB_MEM_BEN_IMPL=1
 
 CFLAGS += -Wno-format
 CFLAGS += -Wno-int-to-pointer-cast
