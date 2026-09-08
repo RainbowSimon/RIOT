@@ -56,7 +56,9 @@ static void* _poll_bp(void* arg)
 
 static void _config_nc(void)
 {
-    /* Configure the channel */
+    /* Configure the channel. Things that are not configured explicitly are
+     * defaulted by the NC. @see pkg_bplib_nc for information on what can be
+     * configured per channel. */
     BPLib_EID_t dest = {
        .Scheme = BPLIB_EID_SCHEME_IPN,
        .IpnSspFormat = BPLIB_EID_IPN_SSP_FORMAT_TWO_DIGIT,
@@ -64,29 +66,15 @@ static void _config_nc(void)
        .Node = BPLIB_EXAMPLE_REMOTE_NODE_NO,
        .Service = BPLIB_EXAMPLE_REMOTE_SERVICE_NO
     };
-    bplib_channel_set_crc_type(0, BPLib_CRC_Type_CRC16);
-    bplib_channel_set_service_no(0, BPLIB_EXAMPLE_REMOTE_SERVICE_NO);
-    bplib_channel_set_bundle_flags(0, 0);
-    bplib_channel_set_lifetime(0, 3600000);
     bplib_channel_set_dest_eid(0, dest);
-    bplib_channel_set_report_to_eid(0, BPLIB_EID_DTN_NONE);
+    bplib_channel_set_service_no(0, BPLIB_EXAMPLE_REMOTE_SERVICE_NO);
 
     bplib_channel_set_block_crc_type(0, BPLIB_PAYLOAD_BLOCK, BPLib_CRC_Type_CRC32C);
 
-    bplib_channel_set_block_num(0, BPLIB_BUNDLE_AGE_BLOCK, 2);
-    bplib_channel_set_block_crc_type(0, BPLIB_BUNDLE_AGE_BLOCK, BPLib_CRC_Type_CRC16);
-
-    /* Here the hop count and previous node blocks are configured and added. They
-     * can be removed by setting the bplib_channel_set_block_include to false.*/
     bplib_channel_set_block_include(0, BPLIB_HOP_COUNT_BLOCK, true);
-    bplib_channel_set_hop_limit(0, 10);
-    bplib_channel_set_block_num(0, BPLIB_HOP_COUNT_BLOCK, 3);
-    bplib_channel_set_block_crc_type(0, BPLIB_HOP_COUNT_BLOCK, BPLib_CRC_Type_None);
-
     bplib_channel_set_block_include(0, BPLIB_PREVIOUS_NODE_BLOCK, true);
-    bplib_channel_set_block_num(0, BPLIB_PREVIOUS_NODE_BLOCK, 4);
-    bplib_channel_set_block_crc_type(0, BPLIB_PREVIOUS_NODE_BLOCK, BPLib_CRC_Type_None);
 
+    /* Configure the contact */
     BPLib_EID_Pattern_t reachable_eids = {
         .Scheme       = BPLIB_EID_SCHEME_IPN,
         .IpnSspFormat = BPLIB_EID_IPN_SSP_FORMAT_TWO_DIGIT,
