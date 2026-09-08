@@ -17,6 +17,10 @@
 #include "bplib_riot_nc.h"
 #include "bplib.h"
 
+#define NC_HOP_COUNT_LIMIT_DEFAULT      10
+#define NC_BUNDLE_LIFETIME_DEFAULT      3600000     /* [ms] => One hour */
+#define NC_BUNDLE_FLAGS_DEFAULT         0
+
 static BPLib_PI_ChannelTable_t       ChanTbl = { 0 };
 static BPLib_CLA_ContactsTable_t ContactsTbl = { 0 };
 static BPLib_NC_MibPerNodeConfig_t  MibPnTbl = {
@@ -39,6 +43,55 @@ static BPLib_NC_MibPerNodeConfig_t  MibPnTbl = {
     }
 };
 
+/**
+ * @brief Initialize the NC tables 
+ *
+ * This brings the (by default 0 initialized) tables into a working state. It
+ * configures a very minimal setup with CRC16 and no enabled extension blocks.
+ * It does however set the extension blocks to a good state so that they also
+ * work by just enabling them.
+ *
+ * The only things left to configure now are the bundle destination and the
+ * contact destination and other contact configuration. Of course other defaults
+ * can be changed still.
+ */
+static void _init_nc_tables(void)
+{
+    for (int i = 0; i < BPLIB_MAX_NUM_CHANNELS; i++) {
+        /* Use CRC16 everywhere */
+        bplib_channel_set_crc_type(i, BPLib_CRC_Type_CRC16);
+        bplib_channel_set_block_crc_type(i, BPLIB_PREVIOUS_NODE_BLOCK, BPLib_CRC_Type_CRC16);
+        bplib_channel_set_block_crc_type(i, BPLIB_BUNDLE_AGE_BLOCK, BPLib_CRC_Type_CRC16);
+        bplib_channel_set_block_crc_type(i, BPLIB_HOP_COUNT_BLOCK, BPLib_CRC_Type_CRC16);
+        bplib_channel_set_block_crc_type(i, BPLIB_PAYLOAD_BLOCK, BPLib_CRC_Type_CRC16);
+
+        /* 0 and 1 are reserved for primary and payload. All other block have to be unique. */
+        bplib_channel_set_block_num(i, BPLIB_PAYLOAD_BLOCK, 1);
+        bplib_channel_set_block_num(i, BPLIB_PREVIOUS_NODE_BLOCK, 2);
+        bplib_channel_set_block_num(i, BPLIB_BUNDLE_AGE_BLOCK, 3);
+        bplib_channel_set_block_num(i, BPLIB_HOP_COUNT_BLOCK, 4);
+
+        /* payload is always included and bundle age is included if necessary,
+         * cannot be controlled. */
+        bplib_channel_set_block_include(i, BPLIB_PREVIOUS_NODE_BLOCK, false);
+        bplib_channel_set_block_include(i, BPLIB_HOP_COUNT_BLOCK, false);
+
+        /* Hop count default */
+        bplib_channel_set_hop_limit(i, NC_HOP_COUNT_LIMIT_DEFAULT);
+
+        /* Default bundle options. The destination of course cannot be defaulted. */
+        bplib_channel_set_bundle_flags(i, NC_BUNDLE_FLAGS_DEFAULT);
+        bplib_channel_set_lifetime(i, NC_BUNDLE_LIFETIME_DEFAULT);
+        /* Make sure each channel has its own local service number. */
+        bplib_channel_set_service_no(i, i + 1);
+        bplib_channel_set_report_to_eid(i, BPLIB_EID_DTN_NONE);
+    }
+
+    /* Contact configuration is impossible to default, the users need to
+     * configure the destination address themselves. Also this depends on
+     * the used CLA. */
+}
+
 BPLib_Status_t bplib_riot_nc_init(BPLib_NC_ConfigPtrs_t* ConfigPtrs)
 {
     if (ConfigPtrs == NULL) {
@@ -57,7 +110,11 @@ BPLib_Status_t bplib_riot_nc_init(BPLib_NC_ConfigPtrs_t* ConfigPtrs)
     ConfigPtrs->LatConfigPtr       = NULL;
     ConfigPtrs->StorConfigPtr      = NULL;
 
-    return BPLib_NC_Init(ConfigPtrs);
+    BPLib_Status_t rc = BPLib_NC_Init(ConfigPtrs);
+
+    _init_nc_tables();
+
+    return rc;
 }
 
 static BPLib_Status_t _channel_ok_and_stopped(uint32_t channel)
